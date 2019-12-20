@@ -1,0 +1,5 @@
+package com.capgemini.hotelmanagement.bean;
+
+public class HotelBean {
+
+}
