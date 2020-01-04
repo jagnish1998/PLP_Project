@@ -1,0 +1,10 @@
+package com.capgemini.hotelmanagement.dao;
+
+import java.util.Date;
+
+import com.capgemini.hotelmanagement.bean.BookingBean;
+
+public interface BookingDao {
+   public boolean bookRoom(BookingBean bookingBean);
+   public boolean bookingDetails(Date checkInOut);
+}

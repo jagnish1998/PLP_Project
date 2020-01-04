@@ -1,0 +1,152 @@
+package com.capgemini.hotelmanagement.testServices;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.capgemini.hotelmanagement.bean.UserBean;
+import com.capgemini.hotelmanagement.dao.HotelDaoImpl;
+import com.capgemini.hotelmanagement.dao.UserDaoImpl;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+import junit.framework.Assert;
+
+@SpringBootTest
+public class UserServiceTest {
+
+	@Autowired
+	UserDaoImpl implementation;
+	@Autowired
+	HotelDaoImpl hotelImpl;
+	
+	//valid
+	@Test
+	public void testAddUser() throws HotelManagementException {
+		UserBean userBean = new UserBean();
+		userBean.setEmail("divya@gmail.com");
+		userBean.setAddress("pune");
+		userBean.setHotelId(101);
+		userBean.setNationality("Indian");
+		userBean.setPassword("Divya@08");
+		userBean.setPhoneNo("8857863105");
+		userBean.setUserName("divya chavan");
+		userBean.setUserType("user");
+		boolean user = implementation.addUser(userBean);
+		Assert.assertEquals(true, user);
+	}
+	//invalid
+	@Test
+	public void testAddUserInvalid() throws HotelManagementException {
+		UserBean userBean = new UserBean();
+		userBean.setEmail("divya@gmail.com");		//invalid email
+		userBean.setAddress("pune");
+		userBean.setHotelId(102);
+		userBean.setNationality("Indian");
+		userBean.setPassword("Divya@08");
+		userBean.setPhoneNo("8857863105");
+		userBean.setUserName("divya chavan");
+		userBean.setUserType("user"); 
+		assertThrows(HotelManagementException.class, ()-> {
+			implementation.addUser(userBean);
+		});
+	}
+	//valid
+	
+	@Test
+	public void testUpdateUserProfile() throws HotelManagementException {
+		UserBean userBean = new UserBean();
+		userBean.setUserId(6);
+		userBean.setEmail("diya@gmail.com");
+		userBean.setAddress("Bangalore");
+		userBean.setHotelId(102);
+		userBean.setNationality("Indian");
+		userBean.setPassword("Divya@08");
+		userBean.setPhoneNo("8600279745");
+		userBean.setUserName("divya chavan");
+		userBean.setUserType("user");
+		boolean user = implementation.updateUserProfile(userBean);
+		Assert.assertEquals(true, user);
+	}
+	//invalid
+	@Test
+	public void testUpdateUserProfileInvalid() throws HotelManagementException {
+		UserBean userBean = new UserBean();
+		userBean.setUserId(6);
+		userBean.setEmail("diya@gmail.com");
+		userBean.setAddress("Bangalore");
+		userBean.setHotelId(102);
+		userBean.setNationality("Indian");
+		userBean.setPassword("Divya@08");
+		userBean.setPhoneNo("860027");//invalid phone no
+		userBean.setUserName("divya chavan");
+		userBean.setUserType("user");
+		boolean user = implementation.updateUserProfile(userBean);
+		Assert.assertEquals(true, user);
+		assertThrows(HotelManagementException.class, ()-> {
+			implementation.updateUserProfile(userBean);
+		});
+	}
+
+	//valid
+	@Test
+	public void testGetUser() throws HotelManagementException {
+	
+		 UserBean userBean =new UserBean();
+		 userBean.setUserType("user");
+		 List<UserBean> user = implementation.getUser("user");
+		 Assert.assertEquals(true,user);
+		
+	}
+	
+	 //invalid
+		@Test
+		public void testGetUserInvalid() throws HotelManagementException {
+		
+			 UserBean userBean =new UserBean();
+			 userBean.setUserType("user");
+			 List<UserBean> user = implementation.getUser("user");
+			 Assert.assertEquals(true,user);
+			 assertThrows(HotelManagementException.class, ()-> {
+					implementation.getUser("user");
+			});
+			
+		}
+	//valid
+	@Test
+	public void testChangePassword() throws HotelManagementException {
+
+		UserBean userBean = new UserBean();
+		userBean.setUserId(6);
+		userBean.setEmail("diya@gmail.com");
+		userBean.setAddress("Bangalore");
+		userBean.setHotelId(102);
+		userBean.setNationality("Indian");
+		userBean.setPhoneNo("8600279745");
+		userBean.setUserName("divya chavan");
+		userBean.setUserType("user");
+		boolean test = implementation.changePassword(userBean, "Diya@05");
+		Assert.assertEquals(true, test);
+	}
+	//invalid
+	@Test
+	public void testChangePasswordInvalid() throws HotelManagementException {
+
+		UserBean userBean = new UserBean();
+		userBean.setUserId(6);
+		userBean.setEmail("diya@gmail.com");
+		userBean.setAddress("Bangalore");
+		userBean.setHotelId(102);
+		userBean.setNationality("Indian");
+		userBean.setPhoneNo("8600279745");
+		userBean.setUserName("divya chavan");
+		userBean.setUserType("user");
+		 assertThrows(HotelManagementException.class, ()-> {
+				implementation.changePassword(userBean,"Diya@05");
+		});
+		
+	}
+}

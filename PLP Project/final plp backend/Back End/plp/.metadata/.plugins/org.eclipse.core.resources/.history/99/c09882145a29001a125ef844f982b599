@@ -1,0 +1,95 @@
+package com.capgemini.hotelmanagement.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.capgemini.hotelmanagement.bean.HotelBean;
+import com.capgemini.hotelmanagement.bean.UserBean;
+import com.capgemini.hotelmanagement.dao.UserDao;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+import com.capgemini.hotelmanagement.validation.HotelValidation;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+	@Autowired
+	UserDao userDao;
+	@Autowired
+	HotelValidation hotelValidation;
+
+	@Override
+	public boolean addUser(UserBean userBean) {
+		String email = userBean.getEmail();
+		String password = userBean.getPassword();
+		String phoneNo=userBean.getPhoneNo();
+		String userName=userBean.getUserName();
+		if (hotelValidation.emailValidation(email))
+			if (hotelValidation.passwordValidation(password)) {
+				if(hotelValidation.mobileNoValidation(phoneNo)) {
+					return userDao.addUser(userBean);
+				}
+				else {
+					throw new HotelManagementException("The Number Starts From 6-9 And It Contains Number Only");
+				}
+				
+			} else {
+				throw new HotelManagementException(
+						"Password Must have atleast 1 captial letter,special charcter,digit");
+			}
+		else {
+			throw new HotelManagementException("Invalid Email PLease Enter Valid Email");
+		}
+	}
+
+	@Override
+	public UserBean login(String email, String password) {
+		if (hotelValidation.emailValidation(email)) {
+			if (hotelValidation.passwordValidation(password)) {
+				return userDao.login(email, password);
+			} else {
+				throw new HotelManagementException(
+						"Password Must have atleast 1 captial letter,special charcter,digit");
+			}
+		} else {
+			throw new HotelManagementException("Invalid Email PLease Enter Valid Email");
+		}
+	}
+
+	@Override
+	public boolean updateUserProfile(UserBean userBean) {
+		return userDao.updateUserProfile(userBean);
+	}
+
+	@Override
+	public List<UserBean> getAllUser() {
+		return userDao.getAllUser();
+	}
+
+	@Override
+	public List<UserBean> getUser(String type) {
+		return userDao.getUser(type);
+	}
+
+	@Override
+	public List<HotelBean> getHotel(String hotelLocation) {
+		return userDao.getHotel(hotelLocation);
+	}
+
+	@Override
+	public boolean changePassword(UserBean userBean, String newPassword) {
+		return userDao.changePassword(userBean, newPassword);
+	}
+
+	@Override
+	public UserBean viewProfile(String email) {
+		return userDao.viewProfile(email);
+	}
+
+	@Override
+	public boolean deleteUser(int userId) {
+		return userDao.deleteUser(userId);
+	}
+
+}

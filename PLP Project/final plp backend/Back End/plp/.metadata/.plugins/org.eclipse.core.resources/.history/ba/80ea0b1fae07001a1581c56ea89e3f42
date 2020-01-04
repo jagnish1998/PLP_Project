@@ -1,0 +1,88 @@
+package com.capgemini.hotelmanagement.dao;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
+
+import org.springframework.stereotype.Repository;
+
+import com.capgemini.hotelmanagement.bean.BookingBean;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+@Repository
+public class BookingDaoImpl implements BookingDao {
+	@PersistenceUnit
+	private EntityManagerFactory entityManagerFactory ;
+
+	@Override
+	public boolean bookRoom(BookingBean bookingBean)throws HotelManagementException {
+		boolean isAdded=false;
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction entityTransaction = entityManager.getTransaction();
+		try {
+			entityTransaction.begin();
+			entityManager.persist(bookingBean);
+			entityTransaction.commit();
+			isAdded = true;
+		} catch (Exception e) {
+
+			throw new HotelManagementException("Booking Is Not Done");
+		}
+		
+		return isAdded;
+	}
+
+	@Override
+	public List<BookingBean> bookingDetails(Date checkinDate) throws HotelManagementException{
+		EntityManager entityManager=entityManagerFactory.createEntityManager();
+		EntityTransaction  entityTransaction=entityManager.getTransaction();
+		String jpql = "from BookingBean where checkinDate=:checkinDate";
+		Query query = entityManager.createQuery(jpql);
+		query.setParameter("checkinDate", checkinDate);
+
+		List<BookingBean> bookingList = null;
+		try {
+			entityTransaction.begin();
+			bookingList = query.getResultList();
+            entityTransaction.commit();
+		} catch (Exception e) {
+			
+			//throw new HotelManagementException("Unable To get Booking Details");
+			e.printStackTrace();
+		}
+
+		return bookingList;
+		
+		
+	}
+
+	@Override
+	public List<BookingBean> bookingDetailsForHotel(Date checkinDate, int hotelId) {
+		EntityManager entityManager=entityManagerFactory.createEntityManager();
+		EntityTransaction  entityTransaction=entityManager.getTransaction();
+		String jpql = "from BookingBean where checkinDate=:checkinDate and hotelId=: hotelId";
+		Query query = entityManager.createQuery(jpql);
+		query.setParameter("checkinDate", checkinDate);
+		query.setParameter("hotelId", hotelId);
+
+		List<BookingBean> bookingList = null;
+		try {
+			entityTransaction.begin();
+			bookingList = query.getResultList();
+            entityTransaction.commit();
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+
+		return bookingList;
+	}
+
+	
+
+}

@@ -1,0 +1,130 @@
+package com.capgemini.hotelmanagement.controller;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.capgemini.hotelmanagement.bean.BookingBean;
+import com.capgemini.hotelmanagement.bean.HotelResponseBean;
+import com.capgemini.hotelmanagement.service.BookingService;
+import com.capgemini.hotelmanagement.service.RoomService;
+
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class BookingController {
+	@Autowired
+	BookingService bookingService;
+
+	@Autowired
+	RoomService roomService;
+	
+
+//to calaculate Total Number of Days
+	public static int noOfDays(LocalDate checkInDate, LocalDate checkOutDate) {
+		return (int) (ChronoUnit.DAYS.between(checkInDate, checkOutDate));
+	}
+
+//to get Sysstem Date
+	public static java.sql.Date todysDate() {
+		long millis=System.currentTimeMillis();  
+		java.sql.Date date=new java.sql.Date(millis);  
+		System.out.println(date);
+		return date;
+	}
+
+	@PostMapping("/bookRoom")
+	public HotelResponseBean BookRoom(@RequestBody BookingBean bookingBean) {
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		
+		if (!(bookingBean.getCheckinDate().isBefore(bookingBean.getCheckoutDate()))) {
+		hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Fail");
+			hotelResponseBean.setDescription("Please Enter checkout date greater then checkin date !!");
+		} else {
+
+			int days = noOfDays(bookingBean.getCheckinDate(), bookingBean.getCheckoutDate());
+			double price = roomService.roomPrice(bookingBean.getRoomId());
+			double totalPrice = days * price;
+			bookingBean.setAmount(totalPrice);
+			bookingBean.setDays(days);
+
+			boolean isAdded = bookingService.bookRoom(bookingBean);
+			if (isAdded) {
+				boolean isChanged = roomService.changeStatus(bookingBean.getRoomId());
+				if (isChanged) {
+					hotelResponseBean.setStatuscode(200);
+					hotelResponseBean.setMessage("Success");
+					hotelResponseBean.setDescription("Booking done Successfully");
+				}
+			} else {
+				hotelResponseBean.setStatuscode(400);
+				hotelResponseBean.setMessage("Failer");
+				hotelResponseBean.setDescription("Unable To Book Room");
+			}
+		}
+		return hotelResponseBean;
+	}
+
+	@PostMapping("/makeStatusAvailable")
+	public HotelResponseBean makeStatusAvailable(@RequestParam int roomId) {
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		boolean isChanged = roomService.statusAvailable(roomId);
+		if (isChanged) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Room Status changed To Available Successfully");
+		}
+
+		else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Unable To Change Room Status");
+		}
+		return hotelResponseBean;
+
+	}
+
+	@GetMapping("/bookingDetails")
+	//public HotelResponseBean dayDetails(@RequestParam LocalDate checkinDate)
+	public HotelResponseBean dayDetails(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate){
+		List<BookingBean> bookingList = bookingService.bookingDetails(checkinDate);
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		if (bookingList != null && !bookingList.isEmpty()) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Booking  List Found...");
+			hotelResponseBean.setBookingList(bookingList);
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("No Bookings For That Date...");
+		}
+		return hotelResponseBean;
+	}
+	@GetMapping("/bookingDetailsForHotel")
+	public HotelResponseBean dayDetailsFor(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,int hotelId) {
+		List<BookingBean> bookingList = bookingService.bookingDetailsForHotel(checkinDate, hotelId);
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		if (bookingList != null && !bookingList.isEmpty()) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Booking  List Found...");
+			hotelResponseBean.setBookingList(bookingList);
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("No Bookings For That Date...");
+		}
+		return hotelResponseBean;
+	}
+	
+}

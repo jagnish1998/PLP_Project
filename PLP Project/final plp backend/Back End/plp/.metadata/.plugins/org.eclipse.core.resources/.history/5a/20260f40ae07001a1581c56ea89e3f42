@@ -1,0 +1,12 @@
+package com.capgemini.hotelmanagement.service;
+
+import java.util.Date;
+import java.util.List;
+
+import com.capgemini.hotelmanagement.bean.BookingBean;
+
+public interface BookingService {
+	public boolean bookRoom(BookingBean bookingBean);
+	public List<BookingBean> bookingDetails(Date checkinDate);
+	public List<BookingBean> bookingDetailsForHotel(Date checkinDate,int hotelId);
+}

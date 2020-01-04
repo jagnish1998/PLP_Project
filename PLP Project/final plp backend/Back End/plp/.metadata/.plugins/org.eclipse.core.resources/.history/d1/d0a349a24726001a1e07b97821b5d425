@@ -1,0 +1,49 @@
+package com.capgemini.hotelmanagement.service;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.capgemini.hotelmanagement.bean.BookingBean;
+import com.capgemini.hotelmanagement.dao.BookingDao;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+@Service
+public class BookingServiceImpl implements BookingService{
+	@Autowired
+	private BookingDao bookingDao;
+	
+
+	@Override
+	public boolean bookRoom(BookingBean bookingBean) {
+		
+		try {
+			return bookingDao.bookRoom(bookingBean);
+		} catch (HotelManagementException e) {
+			System.err.println(e.getMessage());
+		}
+		return false;
+	}
+
+
+	@Override
+	public List<BookingBean> bookingDetails(Date checkinDate) {
+		
+		try {
+			return bookingDao.bookingDetails(checkinDate);
+		} catch (HotelManagementException e) {
+			
+			System.err.println(e.getMessage());
+		}
+		return null;
+	}
+
+
+	@Override
+	public List<BookingBean> bookingDetailsForHotel(Date checkinDate, int hotelId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

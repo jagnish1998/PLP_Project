@@ -1,0 +1,157 @@
+package com.capgemini.hotelmanagement.controller;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.capgemini.hotelmanagement.bean.HotelBean;
+import com.capgemini.hotelmanagement.bean.HotelResponseBean;
+import com.capgemini.hotelmanagement.bean.UserBean;
+import com.capgemini.hotelmanagement.service.UserService;
+
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class UserController {
+
+	@Autowired
+	UserService userService;
+
+	@PostMapping("/userRegistration")
+	public HotelResponseBean registerUser(@RequestBody UserBean userBean) {
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		userBean.setUserType("user");
+		boolean isAdded = userService.addUser(userBean);
+		if (isAdded) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("User Register Successfully");
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Enter Valid Email Password");
+		}
+		return hotelResponseBean;
+	}// end of add User
+
+	@PostMapping("/addEmployee")
+	public HotelResponseBean register(@RequestBody UserBean userBean) {
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		userBean.setUserType("employee");
+		boolean isAdded = userService.addUser(userBean);
+		if (isAdded) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Employee Added Successfully");
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Employee Already Exist Please Try with diffrent email");
+		}
+		return hotelResponseBean;
+	}
+
+	@PostMapping("/login")
+	public HotelResponseBean login(@RequestBody UserBean userBean) {
+		String email = userBean.getEmail();
+		String password = userBean.getPassword();
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		UserBean userBean2 = userService.login(email, password);
+		if (userBean2 != null) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("User Login Successfully...");
+			hotelResponseBean.setUserBean(userBean2);
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Unable to Login..");
+		}
+		return hotelResponseBean;
+	}// end of login
+
+	@PostMapping("/updateUserProfile")
+	public HotelResponseBean UpdateHotel(@RequestBody UserBean userBean) {
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		boolean isUpdate = userService.updateUserProfile(userBean);
+		if (isUpdate) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("User Updated Successfully");
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Unable To Update User Profile");
+		}
+		return hotelResponseBean;
+	}
+
+	@GetMapping("/getAllUser")
+	public HotelResponseBean getAllUser() {
+		List<UserBean> userList = userService.getAllUser();
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		if (userList != null && !userList.isEmpty()) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("User List Found...");
+			hotelResponseBean.setUserList(userList);
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("No User Found...");
+		}
+		return hotelResponseBean;
+	}
+
+	@GetMapping("/getUser")
+	public HotelResponseBean getUser(String userType) {
+		List<UserBean> userList = userService.getUser(userType);
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		if (userList != null && !userList.isEmpty()) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("User List Found...");
+			hotelResponseBean.setUserList(userList);
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("No User Found...");
+		}
+		return hotelResponseBean;
+	}
+
+	@GetMapping("/getHotel")
+	public HotelResponseBean getHotel(String hotelLocation) {
+		List<HotelBean> hotelList = userService.getHotel(hotelLocation);
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		if (hotelList != null && !hotelList.isEmpty()) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Hotel List Found...");
+			hotelResponseBean.setHotelList(hotelList);
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("No List Found...");
+		}
+		return hotelResponseBean;
+	}
+
+	@PostMapping("/changePassword")
+	public HotelResponseBean changePassword(@RequestBody UserBean userBean, @RequestParam String newPassword) {
+		boolean isChanged = userService.changePassword(userBean,newPassword);
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		if (isChanged) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Password Changed Successfully");
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Incorrect Old Password");
+		}
+		return hotelResponseBean;
+	}
+}

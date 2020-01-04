@@ -1,0 +1,17 @@
+package com.capgemini.hotelmanagement.dao;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import com.capgemini.hotelmanagement.bean.BookingBean;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+public interface BookingDao {
+   public boolean bookRoom(BookingBean bookingBean) throws HotelManagementException;
+//   public List<BookingBean> bookingDetails(Date checkinDate) throws HotelManagementException;
+//   public List<BookingBean> bookingDetailsForHotel(Date checkinDate,int hotelId);
+   public List<BookingBean> bookingDetails(LocalDate checkinDate) throws HotelManagementException;
+   public List<BookingBean> bookingDetailsForHotel(LocalDate checkinDate,int hotelId) throws HotelManagementException;
+   public double payment(int userId);
+}
+

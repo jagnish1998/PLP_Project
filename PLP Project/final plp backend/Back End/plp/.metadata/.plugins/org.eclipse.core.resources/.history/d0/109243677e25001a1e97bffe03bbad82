@@ -1,0 +1,42 @@
+package com.capgemini.hotelmanagement.dao;
+
+import java.util.Date;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnit;
+
+import org.springframework.stereotype.Repository;
+
+import com.capgemini.hotelmanagement.bean.BookingBean;
+@Repository
+public class BookingDaoImpl implements BookingDao {
+	@PersistenceUnit
+	private EntityManagerFactory entityManagerFactory ;
+
+	@Override
+	public boolean bookRoom(BookingBean bookingBean) {
+		boolean isAdded=false;
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction entityTransaction = entityManager.getTransaction();
+		try {
+			entityTransaction.begin();
+			entityManager.persist(bookingBean);
+			entityTransaction.commit();
+			isAdded = true;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		
+		return isAdded;
+	}
+
+	@Override
+	public boolean bookingDetails(Date checkInOut) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}

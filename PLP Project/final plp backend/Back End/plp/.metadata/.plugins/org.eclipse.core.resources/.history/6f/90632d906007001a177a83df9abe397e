@@ -1,0 +1,90 @@
+package com.capgemini.hotelmanagement.test;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.capgemini.hotelmanagement.bean.HotelBean;
+import com.capgemini.hotelmanagement.dao.HotelDaoImpl;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+
+@SpringBootTest
+public class HotelTest {
+	
+	@Autowired
+	HotelDaoImpl implementation;
+
+	//valid
+	@Test
+	public void testAddHotels()  {
+		
+		HotelBean hotelBean = new HotelBean();
+		hotelBean.setHotelLocation("Pune");
+		hotelBean.setHotelName("Novotel");
+		hotelBean.setNoOfRooms(15);
+		boolean add = implementation.addHotel(hotelBean);
+		assertEquals(true,add);
+	}
+	
+//	invalid
+	@Test
+	public void testAddHotelsInvalid() {
+		
+		HotelBean hotelBean = new HotelBean();
+		hotelBean.setHotelId(1);
+		hotelBean.setHotelLocation("Pune");
+		hotelBean.setHotelName("Novotel");    // hotel is already present
+		hotelBean.setNoOfRooms(68);
+		assertThrows(HotelManagementException.class, ()-> {
+			implementation.addHotel(hotelBean);
+	});
+		
+	}
+	
+	//valid
+	@Test
+	public void testDeleteHotel() {
+	  boolean test = implementation.deleteHotel(1);
+	  assertEquals(true,test);
+	}
+	
+	//invalid
+	@Test
+	public void testDeleteHotelInvalid() {
+	  assertThrows(HotelManagementException.class, ()-> {
+		  implementation.deleteHotel(1);		
+	});
+		
+	}
+	
+	//valid
+	@Test
+	public void testUpdateHotel() {
+		HotelBean hotelBean = new HotelBean();
+		
+		hotelBean.setHotelId(14);
+		hotelBean.setHotelLocation("Hyderabad");
+		hotelBean.setHotelName("Manohar");
+		hotelBean.setNoOfRooms(85);
+		boolean update = implementation.updateHotel(hotelBean);
+		assertEquals(true,update);
+	}
+	
+	@Test
+	public void testUpdateHotelInvalid()  {
+		HotelBean hotelBean = new HotelBean();
+		
+		hotelBean.setHotelId(15);
+		hotelBean.setHotelLocation("Hyderabad");
+		hotelBean.setHotelName("Manohar");
+		hotelBean.setNoOfRooms(85);
+		assertThrows(HotelManagementException.class, ()-> {
+			implementation.updateHotel(hotelBean);
+	});
+  }
+}

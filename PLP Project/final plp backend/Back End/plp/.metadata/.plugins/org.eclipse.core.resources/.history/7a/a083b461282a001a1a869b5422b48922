@@ -1,0 +1,80 @@
+package com.capgemini.hotelmanagement.validation;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class HotelValidationImpl implements HotelValidation{
+	Pattern pattern=null;
+    Matcher matcher=null;
+	@Override
+	public boolean emailValidation(String email) {
+		
+		pattern=Pattern.compile("\\w+\\@\\w+\\.\\w+");
+		matcher=pattern.matcher(email);
+		if(matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean passwordValidation(String password) {
+		pattern=Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,15}");
+		matcher=pattern.matcher(password);
+		if(matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean mobileNoValidation(String phoneNo) {
+		pattern=Pattern.compile("[6,7,8,9][0-9]{9}");
+		matcher=pattern.matcher(phoneNo);
+		if(matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean userNameValidation(String userName) {
+		pattern=Pattern.compile("[a-zA-Zs]+\\s[a-zA-Z]+$");
+		matcher=pattern.matcher(userName);
+		if(matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean hotelNameValidation(String hotelName) {
+		pattern=Pattern.compile("[a-zA-Z]+([\\s][a-zA-Z]+)*");
+		matcher=pattern.matcher(hotelName);
+		if(matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean hotelLocationValidation(String hotelLocation) {
+		pattern=Pattern.compile("\\D+");
+		matcher=pattern.matcher(hotelLocation);
+		System.err.println("Hey buddy");
+		if(matcher.matches()) {
+			
+			return true;
+		}
+		
+		return false;
+	}
+	@Override
+	public boolean roomRentValidation(String roomRent) {
+		pattern=Pattern.compile("^[1-9]\\d*(\\.\\d+)?$");
+		matcher=pattern.matcher(roomRent);
+		if(matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+
+	
+}

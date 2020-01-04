@@ -1,0 +1,91 @@
+package com.capgemini.hotelmanagement.controller;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.capgemini.hotelmanagement.bean.HotelResponseBean;
+import com.capgemini.hotelmanagement.bean.RoomBean;
+import com.capgemini.hotelmanagement.service.RoomService;
+
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class RoomController {
+
+	@Autowired
+	private RoomService roomService;
+
+	@PostMapping("/addRoom")
+	public HotelResponseBean registerUser(@RequestBody RoomBean roomBean) {
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		boolean isAdded = roomService.addRoom(roomBean);
+		if (isAdded) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Room Added Successfully");
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Unable To Add Room");
+		}
+		return hotelResponseBean;
+	}
+
+	@GetMapping(path = "/getAllRoom/{hotelId}")
+	public HotelResponseBean getAllRoom(@RequestParam int hotelId) {
+		//int hotelId = roomBean.getHotelId();
+		List<RoomBean> roomList = roomService.getAllRooms(hotelId);
+		HotelResponseBean hotelResponse = new HotelResponseBean();
+		if (roomList != null && !roomList.isEmpty()) {
+			hotelResponse.setStatuscode(201);
+			hotelResponse.setMessage("Success");
+			hotelResponse.setDescription("Rooms in Hotel fetched Successfuly");
+			hotelResponse.setRoomList(roomList);
+		} else {
+			hotelResponse.setStatuscode(401);
+			hotelResponse.setMessage("Failed");
+			hotelResponse.setDescription("Sorry! Room are not Available Please Check Other Hotel ");
+		}
+		return hotelResponse;
+	}
+
+	@PostMapping(path = "/updateRoom")
+	public HotelResponseBean updateRoom(@RequestBody RoomBean roomBean) {
+		boolean isUpdated = roomService.updateRoom(roomBean);
+		HotelResponseBean hotelResponse = new HotelResponseBean();
+		if (isUpdated) {
+			hotelResponse.setStatuscode(201);
+			hotelResponse.setMessage("Success");
+			hotelResponse.setDescription("Room information updated successfully");
+			// hotelResponse.setRoomList(roomList);
+		} else {
+			hotelResponse.setStatuscode(401);
+			hotelResponse.setMessage("Failed");
+			hotelResponse.setDescription("Unable to Update Informartion");
+			// hotelResponse.setRoomList(roomList);
+		}
+		return hotelResponse;
+	}
+
+	@DeleteMapping("/deleteRoom/{roomId}")
+	public HotelResponseBean deleteHotel(@RequestBody RoomBean roomBean) {
+		HotelResponseBean hotelResponseBean = new HotelResponseBean();
+		int roomId = roomBean.getRoomId();
+		boolean idDeleted = roomService.deleteRoom(roomId);
+		if (idDeleted) {
+			hotelResponseBean.setStatuscode(200);
+			hotelResponseBean.setMessage("Success");
+			hotelResponseBean.setDescription("Room Deleted Successfully");
+		} else {
+			hotelResponseBean.setStatuscode(400);
+			hotelResponseBean.setMessage("Failer");
+			hotelResponseBean.setDescription("Unable To Delete Room");
+		}
+		return hotelResponseBean;
+	}
+}

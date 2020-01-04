@@ -1,0 +1,19 @@
+package com.capgemini.hotelmanagement.dao;
+
+import java.util.List;
+
+import com.capgemini.hotelmanagement.bean.HotelBean;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+public interface HotelDao {
+
+	public boolean addHotel(HotelBean hotelBean) throws HotelManagementException;
+
+	public boolean deleteHotel(int hotelId) throws HotelManagementException;
+
+	public boolean updateHotel(HotelBean hotelBean) throws HotelManagementException;
+
+	public List<HotelBean> getAllHotels() throws HotelManagementException;
+
+	public List<UserBean> getEmployee(int hotelId);
+}

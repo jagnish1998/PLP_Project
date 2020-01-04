@@ -1,0 +1,98 @@
+package com.capgemini.hotelmanagement.bean;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Room")
+public class RoomBean {
+
+	@Id
+	@Column(name = "room_id")
+	private int roomId;
+
+	@Column(name = "room_rent")
+	private double roomRent;
+
+	@Column(name = "room_type")
+	private String roomType;
+
+	@Column(name = "room_capacity")
+	private String roomCapacity;
+
+	@Column(name = "room_status")
+	private String roomStatus;
+
+	@Column(name = "hotel_id")
+	private int hotelId;
+
+	@Column(name = "room_no")
+	private int roomNo;
+
+	
+
+	public int getRoomId() {
+		return roomId;
+	}
+
+	public void setRoomId(int roomId) {
+		this.roomId = roomId;
+	}
+
+	public double getRoomRent() {
+		return roomRent;
+	}
+
+	public void setRoomRent(double roomRent) {
+		this.roomRent = roomRent;
+	}
+
+	public int getRoomNo() {
+		return roomNo;
+	}
+
+	public void setRoomNo(int roomNo) {
+		this.roomNo = roomNo;
+	}
+
+	public String getRoomType() {
+		return roomType;
+	}
+
+	public void setRoomType(String roomType) {
+		this.roomType = roomType;
+	}
+
+	public String getRoomCapacity() {
+		return roomCapacity;
+	}
+
+	public void setRoomCapacity(String roomCapacity) {
+		this.roomCapacity = roomCapacity;
+	}
+
+	public String getRoomStatus() {
+		return roomStatus;
+	}
+
+	public void setRoomStatus(String roomStatus) {
+		this.roomStatus = roomStatus;
+	}
+
+	public int getHotelId() {
+		return hotelId;
+	}
+
+	public void setHotelId(int hotelId) {
+		this.hotelId = hotelId;
+	}
+
+	@Override
+	public String toString() {
+		return "RoomBean [roomId=" + roomId + ", roomRent=" + roomRent + ", roomType=" + roomType + ", roomCapacity="
+				+ roomCapacity + ", roomStatus=" + roomStatus + ", hotelId=" + hotelId + "]";
+	}
+
+}

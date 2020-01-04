@@ -1,0 +1,157 @@
+package com.capgemini.hotelmanagement.testServices;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.capgemini.hotelmanagement.bean.RoomBean;
+import com.capgemini.hotelmanagement.dao.RoomDaoImpl;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+import junit.framework.Assert;
+
+@SpringBootTest
+public class RoomServiceTest {
+	@Autowired
+	RoomDaoImpl implemenatation;
+	
+	//valid
+	@Test
+	public void testUpdateRoom() throws HotelManagementException {
+		RoomBean roomBean = new RoomBean();
+		roomBean.setHotelId(101);
+		roomBean.setRoomCapacity("3");
+		roomBean.setRoomId(1);
+		roomBean.setRoomRent(4500.0);
+		roomBean.setRoomStatus("available");
+		roomBean.setRoomType("non-ac");
+		
+		boolean i = implemenatation.updateRoom(roomBean);
+		assertEquals(true,i);
+	}
+	
+	//invalid
+		@Test
+		public void testUpdateRoomInvalid() throws HotelManagementException {
+			RoomBean roomBean = new RoomBean();
+			roomBean.setHotelId(101);
+			roomBean.setRoomCapacity("3");
+			roomBean.setRoomId(1);
+			roomBean.setRoomRent(4500.0);
+			roomBean.setRoomStatus("available");
+			roomBean.setRoomType("non-ac");
+			
+			boolean i = implemenatation.updateRoom(roomBean);
+			assertEquals(true,i);
+		}
+	
+		//valid
+	@Test
+	public void testDeleteRoom() throws HotelManagementException {
+		boolean i = implemenatation.deleteRoom(1); 
+		Assert.assertEquals(true,i);
+	}
+	
+	//invalid
+	@Test
+	public void testDeleteRoomInvalid() throws HotelManagementException {
+		boolean i = implemenatation.deleteRoom(1); 
+		Assert.assertEquals(true,i);
+	}
+	
+	//valid
+	@Test
+	public void testAddRoom() throws HotelManagementException {
+		RoomBean roomBean = new RoomBean();
+		roomBean.setHotelId(102);
+		roomBean.setRoomCapacity("4");
+		roomBean.setRoomRent(4500.0);
+		roomBean.setRoomStatus("available");
+		roomBean.setRoomType("ac");
+		roomBean.setRoomNo(49);
+		roomBean.setHotelName("JW Moriote");
+		boolean room = implemenatation.updateRoom(roomBean);
+		assertEquals(true,room);
+	}
+	
+	//invalid
+	@Test
+	public void testAddRoomInvalid() throws HotelManagementException {
+		RoomBean roomBean = new RoomBean();
+		roomBean.setHotelId(102);
+		roomBean.setRoomCapacity("4");
+		roomBean.setRoomRent(4500.0);
+		roomBean.setRoomStatus("available");
+		roomBean.setRoomType("ac");
+		roomBean.setRoomNo(49);			//room having 49 no. already present 
+		roomBean.setHotelName("JW Moriote");
+		boolean room = implemenatation.updateRoom(roomBean);
+		assertEquals(true,room);
+	}
+	
+	@Test
+	public void testChangeStatus() throws HotelManagementException {
+		RoomBean roomBean = new RoomBean();
+		roomBean.setRoomId(1);
+		roomBean.setHotelId(102);
+		roomBean.setRoomCapacity("4");
+		roomBean.setRoomRent(7800.0);
+		roomBean.setRoomStatus("available");
+		roomBean.setRoomType("ac");
+		roomBean.setRoomNo(5);
+		roomBean.setHotelName("JW Moriote");
+		boolean room = implemenatation.updateRoom(roomBean);
+		assertEquals(true,room);
+
+	}
+	//invalid
+	@Test
+	public void testChangeStatusInvalid() throws HotelManagementException {
+		RoomBean roomBean = new RoomBean();
+		roomBean.setRoomId(1);
+		roomBean.setHotelId(102);
+		roomBean.setRoomCapacity("4");
+		roomBean.setRoomRent(7800.0);
+		roomBean.setRoomStatus("available");	//status is already available
+		roomBean.setRoomType("ac");
+		roomBean.setRoomNo(5);
+		roomBean.setHotelName("JW Moriote");
+		boolean room = implemenatation.updateRoom(roomBean);
+		assertEquals(true,room);
+
+	}
+	
+	//valid
+	@Test
+	public void teststatusAvailable() throws HotelManagementException {
+		RoomBean roomBean = new RoomBean();
+		roomBean.setHotelId(102);
+		roomBean.setRoomCapacity("4");
+		roomBean.setRoomRent(7800.0);
+		roomBean.setRoomStatus("available");
+		roomBean.setRoomType("ac");
+		roomBean.setRoomNo(5);
+		roomBean.setHotelName("JW Moriote");
+		boolean room = implemenatation.statusAvailable(1);
+		assertEquals(true,room);
+
+	}
+	
+	//invalid
+		@Test
+		public void teststatusAvailableInvalid() throws HotelManagementException {
+			RoomBean roomBean = new RoomBean();
+			roomBean.setHotelId(102);
+			roomBean.setRoomCapacity("4");
+			roomBean.setRoomRent(7800.0);
+			roomBean.setRoomStatus("available");		//room is available already
+			roomBean.setRoomType("ac");
+			roomBean.setRoomNo(5);
+			roomBean.setHotelName("JW Moriote");
+			boolean room = implemenatation.statusAvailable(1);
+			assertEquals(true,room);
+
+		}
+}

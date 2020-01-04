@@ -1,0 +1,24 @@
+package com.capgemini.hotelmanagement.dao;
+
+import java.util.List;
+import com.capgemini.hotelmanagement.bean.RoomBean;
+import com.capgemini.hotelmanagement.exception.HotelManagementException;
+
+public interface RoomDao {
+
+	public boolean addRoom(RoomBean roomBean) throws HotelManagementException;
+
+	public List<RoomBean> getAllRooms(int hotelId) throws HotelManagementException;
+
+	public boolean updateRoom(RoomBean roomBean) throws HotelManagementException;
+
+	public boolean deleteRoom(int roomId) throws HotelManagementException;
+
+	public boolean changeStatus(int roomId) throws HotelManagementException;
+
+	public boolean statusAvailable(int roomId) throws HotelManagementException;
+
+	// public boolean isRoomNoExists(int roomNo,int hotelId) throws
+	// HotelManagementException;
+
+}
